@@ -19,7 +19,7 @@ class TaskResource extends JsonResource
             'label'       => (string)  $this->label,
             'is_complete' => (integer) $this->is_complete,
             'created_at'  => (string)  $this->created_at,
-            'updated_at'  => (string)  $this->updatedet_at,
+            'updated_at'  => (string)  $this->updated_at
         ];
     }
 }

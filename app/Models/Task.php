@@ -9,7 +9,8 @@ class Task extends Model
 {
     use HasFactory;
 
-       /**
+
+    /**
      * The attributes that are mass assignable.
      *
      * @var array
@@ -21,10 +22,11 @@ class Task extends Model
     ];
 
     /**
-     * Get the user that the tasks belongs to
+     * Get the user that the task belongs to
      * @return App\Models\User
      */
-    public function user() {
+    public function user()
+    {
         return $this->belongsTo(User::class);
     }
 }

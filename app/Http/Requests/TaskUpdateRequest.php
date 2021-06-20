@@ -24,8 +24,8 @@ class TaskUpdateRequest extends FormRequest
     public function rules()
     {
         return [
-            'label'        => 'required|string',
-            'is_complete'  => 'required|bool',
+            'label'       => 'required|string',
+            'is_complete' => 'required|bool'
         ];
     }
 }

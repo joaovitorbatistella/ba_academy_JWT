@@ -74,6 +74,21 @@ class AuthService
     return [
       'access_token' => $token,
       'token_type'   => 'Bearer',
+      'expire_in'    => auth()->factory()->getTTL(),
+    ];
+  }
+
+  /**
+   * Refresh auth_token
+   * @return array
+   */
+  public function refresh()
+  {
+    $token = auth()->refresh();
+    return [
+      'access_token' => $token,
+      'token_type'   => 'Bearer',
+      'expire_in'    => auth()->factory()->getTTL(),
     ];
   }
 }

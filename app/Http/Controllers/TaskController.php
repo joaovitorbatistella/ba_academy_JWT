@@ -2,12 +2,13 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use App\Models\Task;
 use App\Http\Requests\TaskStoreRequest;
 use App\Http\Requests\TaskUpdateRequest;
-use App\Services\TaskService;
 use App\Http\Resources\TaskResource;
+use App\Models\Task;
+use App\Services\TaskService;
+use Exception;
+use Illuminate\Http\Request;
 
 class TaskController extends Controller
 {
@@ -30,9 +31,10 @@ class TaskController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        return TaskResource::collection(auth()->user()->tasks);
+        $tasks = $this->task_service->list(auth()->user(), $request->q ?? '');
+        return TaskResource::collection($tasks);
     }
 
     /**
@@ -60,10 +62,11 @@ class TaskController extends Controller
      */
     public function show(Task $task)
     {
-        //
+        $this->task_service->checkPermission($task, auth()->user()->id);
+        return new TaskResource($task);
     }
 
-    /**
+     /**
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
@@ -81,7 +84,6 @@ class TaskController extends Controller
         );
         return new TaskResource($updated_task);
     }
-
     /**
      * Remove the specified resource from storage.
      *
@@ -90,6 +92,7 @@ class TaskController extends Controller
      */
     public function destroy(Task $task)
     {
-        //
+        $success = $this->task_service->destroy($task, auth()->user()->id);
+        return response()->json(['success' => $success]);
     }
 }

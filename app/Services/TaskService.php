@@ -4,9 +4,32 @@ namespace App\Services;
 
 use App\Exceptions\UserNotAllowedException;
 use App\Models\Task;
+use App\Models\User;
 
 class TaskService
 {
+
+  /**
+   * Handle task list
+   * @param App\Models\User
+   * @param string $q
+   * @return array
+   */
+  public function list(
+    User $user,
+    string $q = ''
+  )
+  {
+    if(!empty($q)){
+      $tasks = $user->tasks()->where('label', 'LIKE', "%$q%")->get();
+    }
+    else
+    {
+      $tasks = $user->tasks;
+    }
+
+    return $tasks;
+  }
 
   /**
    * Handle task creation
@@ -46,18 +69,32 @@ class TaskService
     int $user_id
   )
   {
+      $this->checkPermission($task, $user_id);
+
+      $data = [
+          'label'       => $label,
+          'is_complete' => $is_complete,
+      ];
+
+      $task->fill($data);
+      $task->save();
+
+      return $task->fresh();
+  }
+
+  /**
+   * Handle task delete
+   * @param App\Models\Task $task
+   * @param int $user_id
+   * @return bool
+   */
+  public function destroy(
+    Task $task,
+    int $user_id
+  )
+  {
     $this->checkPermission($task, $user_id);
-    dd('Hi');
-
-    $data = [
-      'label'       => $label,
-      'is_complete' => $is_complete,
-    ];
-
-    $task->fill($data);
-    $task->save();
-
-    return $task->fresh();
+    return $task->delete();
   }
 
   /**
